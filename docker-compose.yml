@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+    redis-orchestrator:
+        image: redis:alpine
+        ports:
+            - 6379:6379
+        volumes:
+            - ./data/orchestrator:/data
+
+    monitor:
+        build:
+            context: ./packages/monitor
+            dockerfile: Dockerfile
+        depends_on:
+            - redis-orchestrator
+        command: nodemon --watch './src/**' --ext 'ts,json' --exec 'ts-node src/index.ts'
+        volumes:
+            - ./packages/monitor/src:/app/src
+        environment:
+            REDIS_ADDRESS: redis://redis-orchestrator:6379
+
