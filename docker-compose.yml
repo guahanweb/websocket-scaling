@@ -14,9 +14,13 @@ services:
             dockerfile: Dockerfile
         depends_on:
             - redis-orchestrator
-        command: nodemon --watch './src/**' --ext 'ts,json' --exec 'ts-node src/index.ts'
+        command: nodemon --watch './src/**' --ext 'ts,json,lua' --exec 'ts-node src/index.ts'
         volumes:
             - ./packages/monitor/src:/app/src
+        ports:
+            - 3000:3000
         environment:
+            HOST: 0.0.0.0
+            PORT: 3000
             REDIS_ADDRESS: redis://redis-orchestrator:6379
 
